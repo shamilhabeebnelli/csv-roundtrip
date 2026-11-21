@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+require 'optparse'
+require_relative 'csv_roundtrip'
+
+options = { limit: 1000, key: nil }
+parser = OptionParser.new do |opts|
+  opts.banner = 'Usage: ruby bin/csv-roundtrip [--key COLUMN] [--limit COUNT] ORIGINAL.csv EXPORTED.csv'
+  opts.on('--key COLUMN', Integer, 'Exact stable key column in original, one-based. Otherwise pair by position.') { |n| options[:key] = n }
+  opts.on('--limit COUNT', Integer, 'Maximum reported findings, 1..10000; full counts are retained.') { |n| options[:limit] = n }
+  opts.on('-h', '--help', 'Show help') do
+    puts opts
+    puts 'Reads UTF-8 comma-separated CSV locally. Does not alter files or upload anything.'
+    puts 'JSON output omits paths, header names, keys and values. Review reports before sharing.'
+    puts 'Exit codes: 0 = no differences under implemented checks; 1 = differences; 2 = invalid input/usage.'
+    exit 0
+  end
+  opts.on('--version') { puts CsvRoundtrip::VERSION; exit 0 }
+end
+begin
+  parser.parse!
+  raise CsvRoundtrip::InputError, 'Exactly two CSV input files are required' unless ARGV.length == 2
+  first = CsvRoundtrip.load(ARGV[0], 1)
+  second = CsvRoundtrip.load(ARGV[1], 2)
+  report = CsvRoundtrip.compare(first, second, **options)
+  puts JSON.pretty_generate(report)
+  exit(report[:finding_count].zero? ? 0 : 1)
+rescue OptionParser::ParseError
+  warn 'Invalid command option. Run with --help. No input values are printed.'
+  exit 2
+rescue CsvRoundtrip::InputError => error
+  warn error.message
+  exit 2
+rescue StandardError
+  warn 'Audit could not complete. No partial report was emitted.'
+  exit 2
+end
