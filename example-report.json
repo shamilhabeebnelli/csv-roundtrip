@@ -1,0 +1,63 @@
+{
+  "tool": "csv-roundtrip",
+  "version": "0.1.0",
+  "mode": "position",
+  "rows_before": 2,
+  "rows_after": 2,
+  "columns_before": 4,
+  "columns_after": 4,
+  "matched_rows": 2,
+  "changed_cells": 5,
+  "finding_count": 5,
+  "findings": [
+    {
+      "code": "leading_zeros_removed",
+      "row_before": 1,
+      "row_after": 1,
+      "column_before": 2,
+      "column_after": 2
+    },
+    {
+      "code": "scientific_notation_introduced",
+      "row_before": 1,
+      "row_after": 1,
+      "column_before": 3,
+      "column_after": 3
+    },
+    {
+      "code": "leading_zeros_removed",
+      "row_before": 2,
+      "row_after": 2,
+      "column_before": 2,
+      "column_after": 2
+    },
+    {
+      "code": "long_integer_changed",
+      "row_before": 2,
+      "row_after": 2,
+      "column_before": 3,
+      "column_after": 3
+    },
+    {
+      "code": "whitespace_changed",
+      "row_before": 2,
+      "row_after": 2,
+      "column_before": 4,
+      "column_after": 4
+    }
+  ],
+  "reason_counts": {
+    "leading_zeros_removed": 2,
+    "scientific_notation_introduced": 1,
+    "long_integer_changed": 1,
+    "whitespace_changed": 1
+  },
+  "caveats": [
+    "Reports omit paths, header names, key values and cell values. Counts and positions can still be sensitive.",
+    "Changes may be intentional. Reasons describe observed patterns, not proven spreadsheet behavior.",
+    "No repair, deletion detection, full spreadsheet validation or anonymity guarantee is provided.",
+    "Indexes are one-based data-row and column positions, excluding the header row.",
+    "Rows are paired by position. Insertions, deletions or reordering may produce many unrelated cell differences."
+  ],
+  "truncated": false
+}
